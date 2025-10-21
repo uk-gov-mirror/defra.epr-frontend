@@ -12,13 +12,14 @@ describe(i18nPlugin, () => {
   const mockServer = { ext: vi.fn() }
   const mockI18n = {
     t: vi.fn(),
-    changeLanguage: vi.fn()
+    changeLanguage: vi.fn().mockResolvedValue(undefined)
   }
   const mockI18next = {}
   const mockH = { continue: Symbol('continue') }
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockI18n.changeLanguage.mockResolvedValue(undefined)
     middleware.handle.mockReturnValue((req, res, next) => {
       req.i18n = mockI18n
       next()
