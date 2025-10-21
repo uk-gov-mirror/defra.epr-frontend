@@ -1,9 +1,17 @@
 {
-  "pageTitle": "Home",
-  "heading": "Home",
+  "pageTitle": "Sites",
+  "heading": "Sites",
   "languageNotice": "This service is also available <a href='/cy'>in Welsh (Cymraeg)</a>.",
   "greeting": "Hello there, {{name}}!",
   "item": "{{count}} items",
   "item_one": "{{count}} item",
-  "item_other": "{{count}} items"
+  "item_other": "{{count}} items",
+  "welcome": "Welcome, <strong>{{name}}</strong>",
+  "signOut": "Sign out",
+  "viewAccountDetails": "View your account details",
+  "welcomeGuest": "Welcome, guest!",
+  "signIn": "sign in",
+  "signInPrompt": "You can <a id=\"login-link\" href=\"/login\" class=\"govuk-link\">sign in</a> to access your account.",
+  "testHeading": "Test",
+  "testRegistration": "Test Registration"
 }

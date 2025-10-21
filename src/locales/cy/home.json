@@ -1,9 +1,17 @@
 {
   "pageTitle": "Hafan",
   "heading": "Hafan",
-  "languageNotice": "Mae’r gwasanaeth hwn hefyd ar gael <a href='/en'>yn Saesneg (English)</a>.",
+  "languageNotice": "Mae'r gwasanaeth hwn hefyd ar gael <a href='/en'>yn Saesneg (English)</a>.",
   "greeting": "Hi there(inWelsh), {{name}}!",
   "item": "{{count}} eitemau",
   "item_one": "{{count}} eitem",
-  "item_other": "{{count}} eitemau"
+  "item_other": "{{count}} eitemau",
+  "welcome": "Croeso, <strong>{{name}}</strong>",
+  "signOut": "Allgofnodi",
+  "viewAccountDetails": "Gweld manylion eich cyfrif",
+  "welcomeGuest": "Croeso, westai!",
+  "signIn": "mewngofnodi",
+  "signInPrompt": "Gallwch <a id=\"login-link\" href=\"/login\" class=\"govuk-link\">fewngofnodi</a> i gael mynediad at eich cyfrif.",
+  "testHeading": "Prawf",
+  "testRegistration": "Cofrestru Prawf"
 }
