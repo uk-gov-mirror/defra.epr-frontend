@@ -1,14 +1,14 @@
-import { describe, test, expect, vi, beforeEach } from 'vitest'
 import middleware from 'i18next-http-middleware'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { i18nPlugin } from './i18next.js'
 
-vi.mock('i18next-http-middleware', () => ({
+vi.mock(import('i18next-http-middleware'), () => ({
   default: {
     handle: vi.fn()
   }
 }))
 
-describe('i18nPlugin', () => {
+describe(i18nPlugin, () => {
   const mockServer = { ext: vi.fn() }
   const mockI18n = {
     t: vi.fn(),
@@ -27,6 +27,7 @@ describe('i18nPlugin', () => {
 
   test('registers onRequest and onPreResponse hooks', async () => {
     await i18nPlugin.register(mockServer, { i18next: mockI18next })
+
     expect(mockServer.ext).toHaveBeenCalledWith(
       'onRequest',
       expect.any(Function)
@@ -68,6 +69,7 @@ describe('i18nPlugin', () => {
     }
 
     const result = await onRequest(mockRequest, mockH)
+
     expect(mockRequest.i18n.changeLanguage).toHaveBeenCalledWith('en')
     expect(result).toBe(mockH.continue)
   })
@@ -104,8 +106,10 @@ describe('i18nPlugin', () => {
     }
 
     const result = await onPreResponse(mockRequest, mockH)
+
     expect(mockRequest.response.source.context.t).toBe(mockRequest.t)
     expect(mockRequest.response.source.context.language).toBe('cy')
+    expect(mockRequest.response.source.context.htmlLang).toBe('cy')
     expect(result).toBe(mockH.continue)
   })
 })

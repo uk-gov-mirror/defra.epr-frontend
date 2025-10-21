@@ -26,6 +26,7 @@ export const i18nPlugin = {
       if (request.response?.source?.context) {
         request.response.source.context.t = request.t
         request.response.source.context.language = request.i18n.language
+        request.response.source.context.htmlLang = request.i18n.language
       }
       return h.continue
     })
