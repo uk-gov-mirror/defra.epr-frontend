@@ -5,23 +5,9 @@
     <div class="govuk-body" data-testid="app-page-body">
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">{{ heading }}</h1>
-
         <p>We've found a potential match for your {{ entityName }}</p>
         <h2 class="govuk-heading-l">You currently represent</h2>
         <p>Name: {{ defraIdOrgName }} ({% if isCurrentOrganisationLinked %}linked{% else %}unlinked{% endif %})</p>
-        {{ govukTable({
-          firstCellIsHeader: true,
-          head: [
-            {
-              text: "Name"
-            },
-            {
-              text: "Action"
-            }
-          ],
-          rows: otherRelationships
-        }) }}
-
         {% if shouldShowTableOfUnlinkedOrganisations %}
           <h2 class="govuk-heading-l">{{ entityName | capitalize }} data not linked</h2>
           {{ govukTable({
