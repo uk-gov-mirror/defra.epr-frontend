@@ -6,13 +6,15 @@ import {
   ACCREDITATION_YEAR,
   fetchRegistrationWithAccreditation
 } from '#server/common/helpers/organisations/fetch-registration-with-accreditation.js'
+import { materialsHomepage } from '#server/common/helpers/organisations/registration-in-view.js'
 import { fetchSummaryLogStatus } from '#server/common/helpers/upload/fetch-summary-log-status.js'
 import { initiateSummaryLogUpload } from '#server/common/helpers/upload/initiate-summary-log-upload.js'
 import { fetchAccreditationBalance } from '#server/common/helpers/waste-balance/fetch-accreditation-balance.js'
 import { toYear } from '#server/common/helpers/year.js'
 import {
   organisationPath as toOrganisationPath,
-  registrationPath as toRegistrationPath
+  registrationPath as toRegistrationPath,
+  summaryLogUploadPathUnder
 } from '#server/reports/helpers/report-paths.js'
 import { requiresResubmission } from './closed-period-changes.js'
 import { renderCheckView } from './check-controller.js'
@@ -22,6 +24,7 @@ import { buildValidationFailuresViewModel } from './validation-failures-view-mod
  * @import { UserSession } from '#server/auth/types/session.js'
  * @import { AccreditationNumber } from '#server/common/helpers/accreditation-number.js'
  * @import { BackendToken } from '#server/common/helpers/backend-token.js'
+ * @import { RegistrationWithAccreditation } from '#server/common/helpers/organisations/fetch-registration-with-accreditation.js'
  * @import { TypedLogger } from '#server/common/helpers/logging/logger.js'
  * @import { Year } from '#server/common/helpers/year.js'
  * @import { RegistrationKeys } from '#server/reports/helpers/report-paths.js'
@@ -350,11 +353,29 @@ const renderPassedValidationView = async (
 ) => {
   const context = toValidatedContext(renderContext)
 
+  const registrationWithAccreditation =
+    await fetchRegistrationWithAccreditation(
+      { ...keys, year: context.year },
+      session.backendToken
+    )
+
   const { wasteBalance } = isRegisteredOnlyProcessingType(
     context.processingType
   )
     ? {}
-    : await getWasteBalanceData(keys, context.year, session, logger)
+    : await getWasteBalanceData(
+        registrationWithAccreditation,
+        context.year,
+        session,
+        logger
+      )
+
+  const homepagePath =
+    materialsHomepage(
+      keys,
+      registrationWithAccreditation.registration,
+      context.year
+    )?.path ?? context.registrationPath
 
   const render =
     context.status === summaryLogStatuses.validated
@@ -364,6 +385,7 @@ const renderPassedValidationView = async (
   return render(h, localise, {
     ...context,
     organisationPath: `${context.organisationPath}/${context.year}`,
+    uploadPath: summaryLogUploadPathUnder(homepagePath),
     wasteBalance
   })
 }
@@ -400,19 +422,18 @@ const getUploadUrl = async (status, keys, redirectUrl, session) => {
 /**
  * The current balance of the operator's accreditation for the summary log's
  * year, or an empty object when it has no live one.
- * @param {RegistrationKeys} keys
+ * @param {RegistrationWithAccreditation} registrationWithAccreditation - for the summary log's year
  * @param {Year} summaryLogYear
  * @param {UserSession} session
  * @param {TypedLogger} logger - Request logger
  * @returns {Promise<{wasteBalance?: number}>}
  */
-const getWasteBalanceData = async (keys, summaryLogYear, session, logger) => {
-  const { organisation, accreditation } =
-    await fetchRegistrationWithAccreditation(
-      { ...keys, year: summaryLogYear },
-      session.backendToken
-    )
-
+const getWasteBalanceData = async (
+  { organisation, accreditation },
+  summaryLogYear,
+  session,
+  logger
+) => {
   if (!accreditation) {
     return {}
   }
